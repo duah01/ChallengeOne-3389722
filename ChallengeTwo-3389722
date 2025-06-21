@@ -1,0 +1,49 @@
+import java.util.*;
+
+public class SearchSuggestionSystem {
+    private List<String> products;
+
+    public SearchSuggestionSystem(List<String> products) {
+        Collections.sort(products); // Sort lexicographically
+        this.products = products;
+    }
+
+    public List<List<String>> getSuggestions(String searchWord) {
+        List<List<String>> result = new ArrayList<>();
+        StringBuilder prefix = new StringBuilder();
+
+        for (char c : searchWord.toCharArray()) {
+            prefix.append(c);
+            result.add(getMatches(prefix.toString()));
+        }
+
+        return result;
+    }
+
+    private List<String> getMatches(String prefix) {
+        List<String> suggestions = new ArrayList<>();
+        int count = 0;
+        for (String product : products) {
+            if (product.startsWith(prefix)) {
+                suggestions.add(product);
+                count++;
+                if (count == 3) break; // Only 3 suggestions max
+            }
+        }
+        return suggestions;
+    }
+
+    // Example usage
+    public static void main(String[] args) {
+        List<String> productList = Arrays.asList("mobile", "mouse", "moneypot", "monitor", "mousepad");
+        SearchSuggestionSystem system = new SearchSuggestionSystem(productList);
+
+        String searchWord = "mouse";
+        List<List<String>> suggestions = system.getSuggestions(searchWord);
+
+        int i = 1;
+        for (List<String> list : suggestions) {
+            System.out.println("Suggestions after typing '" + searchWord.substring(0, i++) + "': " + list);
+        }
+    }
+}
